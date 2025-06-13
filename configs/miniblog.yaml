@@ -1,0 +1,6 @@
+db:
+  host: 127.0.0.1
+  username: miniblog
+  password: miniblog1234
+  database: miniblog
+  log-level: 4
