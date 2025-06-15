@@ -4,3 +4,9 @@ db:
   password: miniblog1234
   database: miniblog
   log-level: 4
+log:
+  disable-caller: false
+  disable-stacktrace: false
+  level: debug
+  format: console
+  output-paths: [/tmp/miniblog.log, stdout]

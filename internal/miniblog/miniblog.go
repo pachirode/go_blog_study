@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/marmotedu/Miniblog/pkg/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -15,6 +16,9 @@ func NewMiniBlogCommand() *cobra.Command {
 		Use:          "miniblog",
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			log.Init(logOptions())
+			defer log.Sync()
+
 			return run()
 		},
 		Args: func(cmd *cobra.Command, args []string) error {
@@ -35,6 +39,6 @@ func NewMiniBlogCommand() *cobra.Command {
 
 func run() error {
 	setting, _ := json.Marshal(viper.AllSettings())
-	fmt.Println("Config file settings: ", string(setting))
+	log.Infow("Config settings: ", string(setting))
 	return nil
 }

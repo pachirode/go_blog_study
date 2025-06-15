@@ -1,19 +1,18 @@
 package miniblog
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 
+	"github.com/marmotedu/Miniblog/pkg/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 const (
 	recommendedHomeDir = ".miniblog"
-
-	defaultConfigName = "miniblog.yaml"
+	defaultConfigName  = "miniblog.yaml"
 )
 
 func initConfig() {
@@ -40,8 +39,18 @@ func initConfig() {
 	viper.SetEnvKeyReplacer(replacer)
 
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Println("Viper parsing error: ", err)
+		log.Errorw("Read confing file failed: ", err)
 	}
 
-	fmt.Println("Using config file:", viper.ConfigFileUsed())
+	log.Infow("Using config file: ", viper.ConfigFileUsed())
+}
+
+func logOptions() *log.Options {
+	return &log.Options{
+		DisableCaller:     viper.GetBool("log.disable-caller"),
+		DisableStacktrace: viper.GetBool("log.disable-stacktrace"),
+		Level:             viper.GetString("log.level"),
+		Format:            viper.GetString("log.format"),
+		OutputPaths:       viper.GetStringSlice("log.output-paths"),
+	}
 }
