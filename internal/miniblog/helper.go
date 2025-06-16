@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/marmotedu/Miniblog/pkg/log"
+	"github.com/marmotedu/Miniblog/internal/pkg/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -42,7 +42,7 @@ func initConfig() {
 		log.Errorw("Read confing file failed: ", err)
 	}
 
-	log.Infow("Using config file: ", viper.ConfigFileUsed())
+	log.Debugw("Using config file: ", viper.ConfigFileUsed())
 }
 
 func logOptions() *log.Options {

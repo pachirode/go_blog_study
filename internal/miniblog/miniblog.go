@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/marmotedu/Miniblog/pkg/log"
+	"github.com/marmotedu/Miniblog/internal/pkg/log"
+	"github.com/marmotedu/Miniblog/pkg/version/verflag"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -16,6 +17,7 @@ func NewMiniBlogCommand() *cobra.Command {
 		Use:          "miniblog",
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			verflag.PrintAndExitIfRequested()
 			log.Init(logOptions())
 			defer log.Sync()
 
@@ -34,6 +36,7 @@ func NewMiniBlogCommand() *cobra.Command {
 
 	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "The path to the miniblog config file")
 
+	verflag.AddFlags(cmd.PersistentFlags())
 	return cmd
 }
 
