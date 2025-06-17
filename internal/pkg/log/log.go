@@ -1,11 +1,14 @@
 package log
 
 import (
+	"context"
 	"sync"
 	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	"github.com/marmotedu/Miniblog/internal/pkg/known"
 )
 
 type zapLogger struct {
@@ -134,4 +137,23 @@ func Sync() {
 
 func (l *zapLogger) Sync() {
 	_ = l.z.Sync()
+}
+
+func C(ctx context.Context) *zapLogger {
+	return std.C(ctx)
+}
+
+func (l *zapLogger) C(ctx context.Context) *zapLogger {
+	lc := l.clone()
+
+	if requestID := ctx.Value(known.RequestUUID); requestID != nil {
+		lc.z = lc.z.With(zap.Any(known.RequestUUID, requestID))
+	}
+
+	return lc
+}
+
+func (l *zapLogger) clone() *zapLogger {
+	lc := *l
+	return &lc
 }

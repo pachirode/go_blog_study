@@ -7,10 +7,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/marmotedu/Miniblog/internal/pkg/log"
-	"github.com/marmotedu/Miniblog/pkg/version/verflag"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/marmotedu/Miniblog/internal/pkg/log"
+	mv "github.com/marmotedu/Miniblog/internal/pkg/middleware"
+	"github.com/marmotedu/Miniblog/pkg/version/verflag"
 )
 
 var cfgFile string
@@ -50,11 +52,15 @@ func run() error {
 	gin.SetMode(viper.GetString("web.runmode"))
 	g := gin.New()
 
+	mws := []gin.HandlerFunc{gin.Recovery(), mv.NoCache, mv.Cors, mv.RequestID(), mv.Secure}
+	g.Use(mws...)
+
 	g.NoRoute(func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"code": 500, "msg": "Page not found"})
 	})
 
 	g.GET("/test", func(ctx *gin.Context) {
+		log.C(ctx).Infow("/test function called")
 		ctx.JSON(http.StatusOK, gin.H{"code": 200})
 	})
 
