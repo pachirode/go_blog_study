@@ -10,3 +10,6 @@ log:
   level: debug
   format: console
   output-paths: [/tmp/miniblog.log, stdout]
+web:
+  runmode: debug
+  addr: 0.0.0.0:8080
