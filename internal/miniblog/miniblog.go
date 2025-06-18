@@ -1,10 +1,15 @@
 package miniblog
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
@@ -67,8 +72,25 @@ func run() error {
 	httpServe := http.Server{Addr: viper.GetString("web.addr"), Handler: g}
 	log.Infow("Starting listen requests on http address", "addr", viper.GetString("web.addr"))
 
-	if err := httpServe.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		log.Fatalw(err.Error())
+	go func() {
+		if err := httpServe.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatalw(err.Error())
+		}
+	}()
+
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Infow("Starting stop server")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := httpServe.Shutdown(ctx); err != nil {
+		log.Fatalw("Shutdown server err", err)
 	}
+
+	log.Infow("Serer stop succeed")
+
 	return nil
 }
