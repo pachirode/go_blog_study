@@ -17,6 +17,8 @@ import (
 
 	"github.com/marmotedu/Miniblog/internal/pkg/log"
 	mv "github.com/marmotedu/Miniblog/internal/pkg/middleware"
+	"github.com/marmotedu/Miniblog/pkg/core"
+	"github.com/marmotedu/Miniblog/pkg/errno"
 	"github.com/marmotedu/Miniblog/pkg/version/verflag"
 )
 
@@ -61,12 +63,12 @@ func run() error {
 	g.Use(mws...)
 
 	g.NoRoute(func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"code": 500, "msg": "Page not found"})
+		core.WriteResponse(ctx, errno.ErrPageNotFound, nil)
 	})
 
 	g.GET("/test", func(ctx *gin.Context) {
 		log.C(ctx).Infow("/test function called")
-		ctx.JSON(http.StatusOK, gin.H{"code": 200})
+		core.WriteResponse(ctx, nil, map[string]string{"status": "ok"})
 	})
 
 	httpServe := http.Server{Addr: viper.GetString("web.addr"), Handler: g}
