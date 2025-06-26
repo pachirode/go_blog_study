@@ -3,6 +3,9 @@ db:
   username: miniblog
   password: miniblog1234
   database: miniblog
+  max-idle-connections: 100
+  max-open-connections: 100
+  max-connection-life-time: 100
   log-level: 4
 log:
   disable-caller: false

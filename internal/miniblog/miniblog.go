@@ -2,7 +2,6 @@ package miniblog
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -53,8 +52,9 @@ func NewMiniBlogCommand() *cobra.Command {
 }
 
 func run() error {
-	setting, _ := json.Marshal(viper.AllSettings())
-	log.Debugw("Config settings: ", string(setting))
+	if err := initStore(); err != nil {
+		return err
+	}
 
 	gin.SetMode(viper.GetString("web.runmode"))
 	g := gin.New()
