@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/marmotedu/Miniblog/pkg/errno"
+	"github.com/marmotedu/Miniblog/internal/pkg/errno"
 )
 
 type ErrResponse struct {
