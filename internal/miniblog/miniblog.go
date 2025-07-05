@@ -14,8 +14,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/marmotedu/Miniblog/internal/pkg/core"
-	"github.com/marmotedu/Miniblog/internal/pkg/errno"
 	"github.com/marmotedu/Miniblog/internal/pkg/log"
 	mv "github.com/marmotedu/Miniblog/internal/pkg/middleware"
 	"github.com/marmotedu/Miniblog/pkg/version/verflag"
@@ -62,14 +60,9 @@ func run() error {
 	mws := []gin.HandlerFunc{gin.Recovery(), mv.NoCache, mv.Cors, mv.RequestID(), mv.Secure}
 	g.Use(mws...)
 
-	g.NoRoute(func(ctx *gin.Context) {
-		core.WriteResponse(ctx, errno.ErrPageNotFound, nil)
-	})
-
-	g.GET("/test", func(ctx *gin.Context) {
-		log.C(ctx).Infow("/test function called")
-		core.WriteResponse(ctx, nil, map[string]string{"status": "ok"})
-	})
+	if err := installRouters(g); err != nil {
+		return nil
+	}
 
 	httpServe := http.Server{Addr: viper.GetString("web.addr"), Handler: g}
 	log.Infow("Starting listen requests on http address", "addr", viper.GetString("web.addr"))
