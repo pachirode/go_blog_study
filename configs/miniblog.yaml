@@ -16,3 +16,4 @@ log:
 web:
   runmode: debug
   addr: 0.0.0.0:8080
+  jwt-secret: 208d42834313bd7494f43ec3033244c3

@@ -7,6 +7,7 @@ import (
 	"github.com/marmotedu/Miniblog/internal/pkg/core"
 	"github.com/marmotedu/Miniblog/internal/pkg/errno"
 	"github.com/marmotedu/Miniblog/internal/pkg/log"
+	mw "github.com/marmotedu/Miniblog/internal/pkg/middleware"
 )
 
 func installRouters(g *gin.Engine) error {
@@ -22,11 +23,15 @@ func installRouters(g *gin.Engine) error {
 
 	uc := user.New(store.S)
 
+	g.POST("/login", uc.Login)
+
 	v1 := g.Group("/v1")
 	{
 		userv1 := v1.Group("/users")
 		{
 			userv1.POST("", uc.Create)
+			userv1.PUT(":name/change-password", uc.ChangePassword)
+			userv1.Use(mw.Authn())
 		}
 	}
 

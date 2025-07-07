@@ -14,8 +14,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	"github.com/marmotedu/Miniblog/internal/pkg/known"
 	"github.com/marmotedu/Miniblog/internal/pkg/log"
 	mv "github.com/marmotedu/Miniblog/internal/pkg/middleware"
+	"github.com/marmotedu/Miniblog/pkg/token"
 	"github.com/marmotedu/Miniblog/pkg/version/verflag"
 )
 
@@ -53,6 +55,8 @@ func run() error {
 	if err := initStore(); err != nil {
 		return err
 	}
+
+	token.Init(viper.GetString("web.jwt-secret"), known.Usernamekey)
 
 	gin.SetMode(viper.GetString("web.runmode"))
 	g := gin.New()
