@@ -17,3 +17,7 @@ web:
   runmode: debug
   addr: 0.0.0.0:8080
   jwt-secret: 208d42834313bd7494f43ec3033244c3
+tls:
+  addr: 0.0.0.0:8843
+  cert: ./_output/cert/server.crt
+  key: ./_output/cert/server.key
