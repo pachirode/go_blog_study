@@ -2,6 +2,7 @@
 COMMON_SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 ROOT_DIR := $(abspath $(shell cd $(COMMON_SELF_DIR)/ && pwd -P))
 OUTPUT_DIR := $(ROOT_DIR)/_output
+APIROOT := $(ROOT_DIR)/pkg/proto
 
 VERSION_PACKAGE=github.com/marmotedu/Miniblog/pkg/version
 ifeq ($(origin VERSION), undefined)
@@ -47,3 +48,12 @@ ca:
     -subj "/C=CN/ST=Guangdong/L=Shenzhen/O=serverdevops/OU=serverit/CN=127.0.0.1/emailAddress=test@test.com"
 	@openssl x509 -req -CA $(OUTPUT_DIR)/cert/ca.crt -CAkey $(OUTPUT_DIR)/cert/ca.key \
 		-CAcreateserial -in $(OUTPUT_DIR)/cert/server.csr -out $(OUTPUT_DIR)/cert/server.crt
+
+protoc:
+	@echo "===========> Generate protobuf files"
+	@protoc
+		--proto_path=$(APIROOT) \
+		--proto_path=$(ROOT_DIR)/third_party \
+		--go_out=paths=source_relative:$(APIROOT) \
+		--go-grpc_out=paths=source_relative:$(APIROOT)
+		$(shell find $(APIROOT) -name *proto)

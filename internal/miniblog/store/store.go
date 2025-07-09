@@ -12,6 +12,7 @@ var (
 )
 
 type IStore interface {
+	DB() *gorm.DB
 	Users() UserStore
 }
 
@@ -27,6 +28,10 @@ func NewStore(db *gorm.DB) *datastore {
 	})
 
 	return S
+}
+
+func (ds *datastore) DB() *gorm.DB {
+	return ds.db
 }
 
 func (ds *datastore) Users() UserStore {

@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"errors"
 	"regexp"
 
 	"github.com/jinzhu/copier"
@@ -11,12 +12,14 @@ import (
 	v1 "github.com/marmotedu/Miniblog/pkg/api/miniblog/v1"
 	"github.com/marmotedu/Miniblog/pkg/auth"
 	"github.com/marmotedu/Miniblog/pkg/token"
+	"gorm.io/gorm"
 )
 
 type UserBiz interface {
 	ChangePassword(ctx context.Context, username string, r *v1.ChangePasswordRequest) error
 	Create(ctx context.Context, r *v1.CreateUserRequest) error
 	Login(ctx context.Context, r *v1.LoginRequest) (*v1.LoginResponse, error)
+	Get(ctx context.Context, username string) (*v1.GetUserResponse, error)
 }
 
 type userBiz struct {
@@ -78,4 +81,23 @@ func (b *userBiz) Login(ctx context.Context, r *v1.LoginRequest) (*v1.LoginRespo
 	}
 
 	return &v1.LoginResponse{Token: t}, nil
+}
+
+func (b *userBiz) Get(ctx context.Context, username string) (*v1.GetUserResponse, error) {
+	userM, err := b.ds.Users().Get(ctx, username)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errno.ErrUserNotFound
+		}
+
+		return nil, err
+	}
+
+	var resp v1.GetUserResponse
+	_ = copier.Copy(&resp, userM)
+
+	resp.CreatedAt = userM.CreatedAt.Format("2001-01-01 01:00:00")
+	resp.UpdatedAt = userM.UpdatedAt.Format("2001-01-01 01:00:00")
+
+	return &resp, nil
 }
