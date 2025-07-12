@@ -33,3 +33,14 @@ type UserInfo struct {
 	CreatedAt string `json:"createdAt"`
 	UpdatedAt string `json:"updatedAt"`
 }
+
+type ListUserResponse struct {
+	TotalCount int64       `json:"totalCount"`
+	Users      []*UserInfo `json:"users"`
+}
+
+type UpdateUserRequest struct {
+	Nickname *string `json:"nickname" valid:"stringlength(1|255)"`
+	Email    *string `json:"email" valid:"email"`
+	Phone    *string `json:"phone" valid:"stringlength(11|11)"`
+}

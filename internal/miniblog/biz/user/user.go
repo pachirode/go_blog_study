@@ -8,6 +8,7 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/marmotedu/Miniblog/internal/miniblog/store"
 	"github.com/marmotedu/Miniblog/internal/pkg/errno"
+	"github.com/marmotedu/Miniblog/internal/pkg/log"
 	"github.com/marmotedu/Miniblog/internal/pkg/model"
 	v1 "github.com/marmotedu/Miniblog/pkg/api/miniblog/v1"
 	"github.com/marmotedu/Miniblog/pkg/auth"
@@ -20,6 +21,7 @@ type UserBiz interface {
 	Create(ctx context.Context, r *v1.CreateUserRequest) error
 	Login(ctx context.Context, r *v1.LoginRequest) (*v1.LoginResponse, error)
 	Get(ctx context.Context, username string) (*v1.GetUserResponse, error)
+	List(ctx context.Context, offset, limit int) (*v1.ListUserResponse, error)
 }
 
 type userBiz struct {
@@ -100,4 +102,28 @@ func (b *userBiz) Get(ctx context.Context, username string) (*v1.GetUserResponse
 	resp.UpdatedAt = userM.UpdatedAt.Format("2001-01-01 01:00:00")
 
 	return &resp, nil
+}
+
+func (b *userBiz) List(ctx context.Context, offset, limit int) (*v1.ListUserResponse, error) {
+	count, list, err := b.ds.Users().List(ctx, offset, limit)
+	if err != nil {
+		log.C(ctx).Errorw("Failed to list users from storage", "err", err)
+		return nil, err
+	}
+
+	users := make([]*v1.UserInfo, 0, len(list))
+	for _, user := range list {
+		users = append(users, &v1.UserInfo{
+			Username:  user.Username,
+			Nickname:  user.Nickname,
+			Email:     user.Email,
+			Phone:     user.Phone,
+			CreatedAt: user.CreatedAt.Format("2001-01-01 01:00:00"),
+			UpdatedAt: user.UpdatedAt.Format("2001-01-01 01:00:00"),
+		})
+	}
+
+	log.C(ctx).Debugw("Get users from storage", "count", len(users))
+
+	return &v1.ListUserResponse{TotalCount: count, Users: users}, nil
 }

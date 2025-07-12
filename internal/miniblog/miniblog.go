@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,10 +14,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc"
 
+	"github.com/marmotedu/Miniblog/internal/miniblog/controller/v1/user"
+	"github.com/marmotedu/Miniblog/internal/miniblog/store"
 	"github.com/marmotedu/Miniblog/internal/pkg/known"
 	"github.com/marmotedu/Miniblog/internal/pkg/log"
 	mv "github.com/marmotedu/Miniblog/internal/pkg/middleware"
+	pb "github.com/marmotedu/Miniblog/pkg/proto/miniblog/v1"
 	"github.com/marmotedu/Miniblog/pkg/token"
 	"github.com/marmotedu/Miniblog/pkg/version/verflag"
 )
@@ -70,6 +75,7 @@ func run() error {
 
 	httpServer := startInsecureServer(g)
 	httpsServer := startSercureServer(g)
+	grpcServer := *startGrpcServer()
 
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
@@ -85,6 +91,8 @@ func run() error {
 	if err := httpsServer.Shutdown(ctx); err != nil {
 		log.Fatalw("Shutdown https server err", err)
 	}
+
+	grpcServer.GracefulStop()
 
 	log.Infow("Servers stop succeed")
 
@@ -118,4 +126,23 @@ func startSercureServer(g *gin.Engine) *http.Server {
 	}
 
 	return httpsServer
+}
+
+func startGrpcServer() *grpc.Server {
+	lis, err := net.Listen("tcp", viper.GetString("grpc.addr"))
+	if err != nil {
+		log.Fatalw("Failed to listen", "err", err)
+	}
+
+	grpcServer := grpc.NewServer()
+	pb.RegisterMiniBlogServer(grpcServer, user.New(store.S, nil))
+
+	log.Infow("Starting listen requests on grpc address", "addr", viper.GetString("grpc.addr"))
+	go func() {
+		if err := grpcServer.Serve(lis); err != nil {
+			log.Fatalw(err.Error())
+		}
+	}()
+
+	return grpcServer
 }

@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/marmotedu/Miniblog/pkg/proto/miniblog/v1";
+
+service MiniBlog {
+  rpc ListUser(ListUserRequest) returns (ListUserResponse) {}
+}
+
+message UserInfo {
+  string username = 1;
+  string nickname = 2;
+  string email = 3;
+  string phone = 4;
+  int64 postCount = 5;
+  google.protobuf.Timestamp createdAt = 6;
+  google.protobuf.Timestamp updatedAt = 7;
+}
+
+message ListUserRequest {
+  int64 limit = 1;
+  int64 offset = 2;
+}
+
+
+message ListUserResponse {
+  int64 totalCount = 1;
+  repeated UserInfo Users = 2;
+}
+
+message ModifierExample {
+  reserved 2, 15 to 25;
+  string username = 1;
+  optional string nickname = 3;
+  bool hasEmail = 4;
+  repeated string phones = 5;
+  bytes content = 6;
+  int32 money  = 7;
+  int64 count = 8;
+  map<string, int64> address = 9;
+  google.protobuf.Timestamp createdAt = 10;
+}
+

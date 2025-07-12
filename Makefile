@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 # ==============================================================================
 COMMON_SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 ROOT_DIR := $(abspath $(shell cd $(COMMON_SELF_DIR)/ && pwd -P))
@@ -51,9 +52,9 @@ ca:
 
 protoc:
 	@echo "===========> Generate protobuf files"
-	@protoc
+	@protoc \
 		--proto_path=$(APIROOT) \
 		--proto_path=$(ROOT_DIR)/third_party \
 		--go_out=paths=source_relative:$(APIROOT) \
-		--go-grpc_out=paths=source_relative:$(APIROOT)
-		$(shell find $(APIROOT) -name *proto)
+		--go-grpc_out=paths=source_relative:$(APIROOT) \
+		$(shell find $(APIROOT) -name *.proto)
