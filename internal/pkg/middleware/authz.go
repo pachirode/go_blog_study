@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/marmotedu/Miniblog/internal/pkg/core"
-	"github.com/marmotedu/Miniblog/internal/pkg/errno"
-	"github.com/marmotedu/Miniblog/internal/pkg/known"
-	"github.com/marmotedu/Miniblog/internal/pkg/log"
+	"github.com/pachirode/go_blog_study/internal/pkg/core"
+	"github.com/pachirode/go_blog_study/internal/pkg/errno"
+	"github.com/pachirode/go_blog_study/internal/pkg/known"
+	"github.com/pachirode/go_blog_study/internal/pkg/log"
 )
 
 type Auther interface {

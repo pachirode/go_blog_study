@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/marmotedu/Miniblog/internal/pkg/known"
+	"github.com/pachirode/go_blog_study/internal/pkg/known"
 )
 
 type zapLogger struct {

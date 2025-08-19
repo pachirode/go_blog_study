@@ -8,9 +8,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/marmotedu/Miniblog/internal/miniblog/store"
-	"github.com/marmotedu/Miniblog/internal/pkg/log"
-	"github.com/marmotedu/Miniblog/pkg/db"
+	"github.com/pachirode/go_blog_study/internal/miniblog/store"
+	"github.com/pachirode/go_blog_study/internal/pkg/log"
+	"github.com/pachirode/go_blog_study/pkg/db"
 )
 
 const (

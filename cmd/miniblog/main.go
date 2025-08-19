@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/marmotedu/Miniblog/internal/miniblog"
+	"github.com/pachirode/go_blog_study/internal/miniblog"
 	_ "go.uber.org/automaxprocs"
 )
 

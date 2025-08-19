@@ -5,7 +5,7 @@ ROOT_DIR := $(abspath $(shell cd $(COMMON_SELF_DIR)/ && pwd -P))
 OUTPUT_DIR := $(ROOT_DIR)/_output
 APIROOT := $(ROOT_DIR)/pkg/proto
 
-VERSION_PACKAGE=github.com/marmotedu/Miniblog/pkg/version
+VERSION_PACKAGE=github.com/pachirode/go_blog_study/pkg/version
 ifeq ($(origin VERSION), undefined)
 	VERSION := $(shell git describe --tags --always --match='v*')
 endif

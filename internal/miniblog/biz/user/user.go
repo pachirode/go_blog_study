@@ -6,13 +6,13 @@ import (
 	"regexp"
 
 	"github.com/jinzhu/copier"
-	"github.com/marmotedu/Miniblog/internal/miniblog/store"
-	"github.com/marmotedu/Miniblog/internal/pkg/errno"
-	"github.com/marmotedu/Miniblog/internal/pkg/log"
-	"github.com/marmotedu/Miniblog/internal/pkg/model"
-	v1 "github.com/marmotedu/Miniblog/pkg/api/miniblog/v1"
-	"github.com/marmotedu/Miniblog/pkg/auth"
-	"github.com/marmotedu/Miniblog/pkg/token"
+	"github.com/pachirode/go_blog_study/internal/miniblog/store"
+	"github.com/pachirode/go_blog_study/internal/pkg/errno"
+	"github.com/pachirode/go_blog_study/internal/pkg/log"
+	"github.com/pachirode/go_blog_study/internal/pkg/model"
+	v1 "github.com/pachirode/go_blog_study/pkg/api/miniblog/v1"
+	"github.com/pachirode/go_blog_study/pkg/auth"
+	"github.com/pachirode/go_blog_study/pkg/token"
 	"gorm.io/gorm"
 )
 

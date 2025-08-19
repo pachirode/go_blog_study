@@ -6,8 +6,8 @@ import (
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/marmotedu/Miniblog/internal/pkg/log"
-	pb "github.com/marmotedu/Miniblog/pkg/proto/miniblog/v1"
+	"github.com/pachirode/go_blog_study/internal/pkg/log"
+	pb "github.com/pachirode/go_blog_study/pkg/proto/miniblog/v1"
 )
 
 func (ctrl *UserController) ListUser(ctx context.Context, r *pb.ListUserRequest) (*pb.ListUserResponse, error) {

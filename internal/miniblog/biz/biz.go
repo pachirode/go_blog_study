@@ -1,8 +1,8 @@
 package biz
 
 import (
-	"github.com/marmotedu/Miniblog/internal/miniblog/biz/user"
-	"github.com/marmotedu/Miniblog/internal/miniblog/store"
+	"github.com/pachirode/go_blog_study/internal/miniblog/biz/user"
+	"github.com/pachirode/go_blog_study/internal/miniblog/store"
 )
 
 type IBiz interface {

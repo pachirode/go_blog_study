@@ -3,7 +3,7 @@ package store
 import (
 	"context"
 
-	"github.com/marmotedu/Miniblog/internal/pkg/model"
+	"github.com/pachirode/go_blog_study/internal/pkg/model"
 	"gorm.io/gorm"
 )
 

@@ -16,14 +16,14 @@ import (
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 
-	"github.com/marmotedu/Miniblog/internal/miniblog/controller/v1/user"
-	"github.com/marmotedu/Miniblog/internal/miniblog/store"
-	"github.com/marmotedu/Miniblog/internal/pkg/known"
-	"github.com/marmotedu/Miniblog/internal/pkg/log"
-	mv "github.com/marmotedu/Miniblog/internal/pkg/middleware"
-	pb "github.com/marmotedu/Miniblog/pkg/proto/miniblog/v1"
-	"github.com/marmotedu/Miniblog/pkg/token"
-	"github.com/marmotedu/Miniblog/pkg/version/verflag"
+	"github.com/pachirode/go_blog_study/internal/miniblog/controller/v1/user"
+	"github.com/pachirode/go_blog_study/internal/miniblog/store"
+	"github.com/pachirode/go_blog_study/internal/pkg/known"
+	"github.com/pachirode/go_blog_study/internal/pkg/log"
+	mv "github.com/pachirode/go_blog_study/internal/pkg/middleware"
+	pb "github.com/pachirode/go_blog_study/pkg/proto/miniblog/v1"
+	"github.com/pachirode/go_blog_study/pkg/token"
+	"github.com/pachirode/go_blog_study/pkg/version/verflag"
 )
 
 var cfgFile string

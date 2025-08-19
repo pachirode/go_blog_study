@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"github.com/marmotedu/Miniblog/pkg/version"
+	"github.com/pachirode/go_blog_study/pkg/version"
 )
 
 type versionValue int

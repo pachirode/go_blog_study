@@ -2,13 +2,13 @@ package miniblog
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/marmotedu/Miniblog/internal/miniblog/controller/v1/user"
-	"github.com/marmotedu/Miniblog/internal/miniblog/store"
-	"github.com/marmotedu/Miniblog/internal/pkg/core"
-	"github.com/marmotedu/Miniblog/internal/pkg/errno"
-	"github.com/marmotedu/Miniblog/internal/pkg/log"
-	mw "github.com/marmotedu/Miniblog/internal/pkg/middleware"
-	"github.com/marmotedu/Miniblog/pkg/auth"
+	"github.com/pachirode/go_blog_study/internal/miniblog/controller/v1/user"
+	"github.com/pachirode/go_blog_study/internal/miniblog/store"
+	"github.com/pachirode/go_blog_study/internal/pkg/core"
+	"github.com/pachirode/go_blog_study/internal/pkg/errno"
+	"github.com/pachirode/go_blog_study/internal/pkg/log"
+	mw "github.com/pachirode/go_blog_study/internal/pkg/middleware"
+	"github.com/pachirode/go_blog_study/pkg/auth"
 )
 
 func installRouters(g *gin.Engine) error {

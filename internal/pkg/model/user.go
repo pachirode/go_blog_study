@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/marmotedu/Miniblog/pkg/auth"
+	"github.com/pachirode/go_blog_study/pkg/auth"
 	"gorm.io/gorm"
 )
 

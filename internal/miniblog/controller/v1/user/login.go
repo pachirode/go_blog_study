@@ -2,10 +2,10 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/marmotedu/Miniblog/internal/pkg/core"
-	"github.com/marmotedu/Miniblog/internal/pkg/errno"
-	"github.com/marmotedu/Miniblog/internal/pkg/log"
-	v1 "github.com/marmotedu/Miniblog/pkg/api/miniblog/v1"
+	"github.com/pachirode/go_blog_study/internal/pkg/core"
+	"github.com/pachirode/go_blog_study/internal/pkg/errno"
+	"github.com/pachirode/go_blog_study/internal/pkg/log"
+	v1 "github.com/pachirode/go_blog_study/pkg/api/miniblog/v1"
 )
 
 func (ctrl *UserController) Login(ctx *gin.Context) {
