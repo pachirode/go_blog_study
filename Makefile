@@ -1,60 +1,63 @@
-SHELL := /bin/bash
-# ==============================================================================
-COMMON_SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
-ROOT_DIR := $(abspath $(shell cd $(COMMON_SELF_DIR)/ && pwd -P))
-OUTPUT_DIR := $(ROOT_DIR)/_output
-APIROOT := $(ROOT_DIR)/pkg/proto
+# 设置默认目标为 all
+.DEFAULT_GOAL := all
 
-VERSION_PACKAGE=github.com/pachirode/go_blog_study/pkg/version
-ifeq ($(origin VERSION), undefined)
-	VERSION := $(shell git describe --tags --always --match='v*')
-endif
+# make 命令默认执行
+all: tidy format build
 
-GIT_TREE_STATE:="dirty"
-ifeq (, $(shell git status --porcelain 2>/dev/null))
-	GIT_TREE_STATE="clean"
-endif
-GIT_COMMIT:=$(shell git rev-parse HEAD)
-
-GO_LDFLAGS += \
-	-X $(VERSION_PACKAGE).GitVersion=$(VERSION) \
-	-X $(VERSION_PACKAGE).GitCommit=$(GIT_COMMIT) \
-	-X $(VERSION_PACKAGE).GitTreeState=$(GIT_TREE_STATE) \
-	-X $(VERSION_PACKAGE).BuildDate=$(shell date -u +'%Y-%m-%dT%H:%M:%SZ')
+include scripts/make-rules/all.mk
 
 # ==============================================================================
-.PHONY: build, format, tidy, clean, ca
+# Usage
+# ==============================================================================
 
-build: tidy # 编译源码，依赖 tidy 目标自动添加/移除依赖包.
-	@go build -v -ldflags '$(GO_LDFLAGS)' -o $(OUTPUT_DIR)/miniblog $(ROOT_DIR)/cmd/miniblog/main.go
+define USAGE_OPTIONS
 
-format: # 格式化 Go 源码.
-	@gofmt -s -w ./
+选项:
 
-tidy: # 自动添加/移除依赖包.
-	@go mod tidy
+  BINS				要构建的二进制文件，默认为 cmd 文件夹下面的所有文件
+					示例：make build BINS="miniblog"
+  VERSION			编译到二进制文件中的版本信息
+  V					设置为 1 启动纤细构建信息输出，默认值为 0
 
-clean: # 清理构建产物、临时文件等.
+ endef
+export USAGE_OPTIONS
+
+# ==============================================================================
+# Binaries
+# ==============================================================================
+
+build: go.tidy
+	@$(MAKE) go.build
+
+# ==============================================================================
+# Testing
+# ==============================================================================
+
+test:
+	@$(MAKE) go.test
+
+cover:
+	@$(MAKE) go.cover
+
+# ==============================================================================
+# Cleanup
+# ==============================================================================
+
+clean:
+	@echo "==> Cleaning all build output"
 	@-rm -vrf $(OUTPUT_DIR)
 
-ca:
-	@mkdir -p $(OUTPUT_DIR)/cert
-	@openssl genrsa -out $(OUTPUT_DIR)/cert/ca.key 1024
-	@openssl req -new -key $(OUTPUT_DIR)/cert/ca.key -out $(OUTPUT_DIR)/cert/ca.csr \
-		-subj "/C=CN/ST=Guangdong/L=Shenzhen/O=devops/OU=it/CN=127.0.0.1/emailAddress=test@test.com"
-	@openssl x509 -req -in $(OUTPUT_DIR)/cert/ca.csr -signkey $(OUTPUT_DIR)/cert/ca.key -out $(OUTPUT_DIR)/cert/ca.crt
-	@openssl genrsa -out $(OUTPUT_DIR)/cert/server.key 1024
-	@openssl rsa -in $(OUTPUT_DIR)/cert/server.key -pubout -out $(OUTPUT_DIR)/cert/server.pem
-	@openssl req -new -key $(OUTPUT_DIR)/cert/server.key -out $(OUTPUT_DIR)/cert/server.csr \
-    -subj "/C=CN/ST=Guangdong/L=Shenzhen/O=serverdevops/OU=serverit/CN=127.0.0.1/emailAddress=test@test.com"
-	@openssl x509 -req -CA $(OUTPUT_DIR)/cert/ca.crt -CAkey $(OUTPUT_DIR)/cert/ca.key \
-		-CAcreateserial -in $(OUTPUT_DIR)/cert/server.csr -out $(OUTPUT_DIR)/cert/server.crt
 
-protoc:
-	@echo "===========> Generate protobuf files"
-	@protoc \
-		--proto_path=$(APIROOT) \
-		--proto_path=$(ROOT_DIR)/third_party \
-		--go_out=paths=source_relative:$(APIROOT) \
-		--go-grpc_out=paths=source_relative:$(APIROOT) \
-		$(shell find $(APIROOT) -name *.proto)
+# ==============================================================================
+# Lint / verification
+# ==============================================================================
+
+lint:
+	@$(MAKE) go.lint
+
+tidy:
+	@$(MAKE) go.tidy
+
+format: tools.verify.protolint
+	@$(MAKE) go.format
+	@protolint -fix -config_path ${PROJ_ROOT_DIR}/.protolint.yaml $(shell find $(APIROOT) -name *.proto)
