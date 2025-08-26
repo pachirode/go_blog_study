@@ -11,6 +11,7 @@ import (
 	"github.com/pachirode/go_blog_study/internal/pkg/known"
 )
 
+// zapLogger Logger 接口的具体实现，底层封装了 zap.Logger
 type zapLogger struct {
 	z *zap.Logger
 }
@@ -21,9 +22,11 @@ var _ Logger = &zapLogger{}
 var (
 	mu sync.Mutex
 
+	// 定义默认全局 Logger
 	std = NewLogger(NewOptions())
 )
 
+// Init 初始化全局日志对象
 func Init(opts *Options) {
 	mu.Lock()
 	defer mu.Unlock()
@@ -31,7 +34,9 @@ func Init(opts *Options) {
 	std = NewLogger(opts)
 }
 
+// NewLogger 根据提供的 Options 参数创建一个自定义 zapLogger
 func NewLogger(opts *Options) *zapLogger {
+	// 没有提供配置选项，则使用默认
 	if opts == nil {
 		opts = NewOptions()
 	}
@@ -41,9 +46,10 @@ func NewLogger(opts *Options) *zapLogger {
 		zapLevel = zapcore.InfoLevel
 	}
 
+	// 创建 encoder 配置，用于控制日志输出格式
 	encoderConfig := zap.NewProductionEncoderConfig()
 	encoderConfig.MessageKey = "message"
-	encoderConfig.TimeKey = "time"
+	encoderConfig.TimeKey = "timestamp"
 	encoderConfig.EncodeTime = func(t time.Time, pae zapcore.PrimitiveArrayEncoder) {
 		pae.AppendString(t.Format("2020-01-02 15:04:05.000"))
 	}
@@ -73,6 +79,7 @@ func NewLogger(opts *Options) *zapLogger {
 	return logger
 }
 
+// Logger 定义日志接口
 type Logger interface {
 	Debugw(msg string, keysAndValues ...interface{})
 	Infow(msg string, keysAndValues ...interface{})
@@ -84,7 +91,7 @@ type Logger interface {
 }
 
 func Debugw(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Debugw(msg, keysAndValues...)
+	std.Debugw(msg, keysAndValues...)
 }
 
 func (l *zapLogger) Debugw(msg string, keysAndValues ...interface{}) {
@@ -92,7 +99,7 @@ func (l *zapLogger) Debugw(msg string, keysAndValues ...interface{}) {
 }
 
 func Infow(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Infow(msg, keysAndValues...)
+	std.Infow(msg, keysAndValues...)
 }
 
 func (l *zapLogger) Infow(msg string, keysAndValues ...interface{}) {
@@ -100,7 +107,7 @@ func (l *zapLogger) Infow(msg string, keysAndValues ...interface{}) {
 }
 
 func Warnw(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Warnw(msg, keysAndValues...)
+	std.Warnw(msg, keysAndValues...)
 }
 
 func (l *zapLogger) Warnw(msg string, keysAndValues ...interface{}) {
@@ -108,7 +115,7 @@ func (l *zapLogger) Warnw(msg string, keysAndValues ...interface{}) {
 }
 
 func Errorw(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Errorw(msg, keysAndValues...)
+	std.Errorw(msg, keysAndValues...)
 }
 
 func (l *zapLogger) Errorw(msg string, keysAndValues ...interface{}) {
@@ -116,7 +123,7 @@ func (l *zapLogger) Errorw(msg string, keysAndValues ...interface{}) {
 }
 
 func Panicw(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Panicw(msg, keysAndValues...)
+	std.Panicw(msg, keysAndValues...)
 }
 
 func (l *zapLogger) Panicw(msg string, keysAndValues ...interface{}) {
@@ -124,13 +131,14 @@ func (l *zapLogger) Panicw(msg string, keysAndValues ...interface{}) {
 }
 
 func Fatalw(msg string, keysAndValues ...interface{}) {
-	std.z.Sugar().Fatalw(msg, keysAndValues...)
+	std.Fatalw(msg, keysAndValues...)
 }
 
 func (l *zapLogger) Fatalw(msg string, keysAndValues ...interface{}) {
 	l.z.Sugar().Fatalw(msg, keysAndValues...)
 }
 
+// Sync 调用底层 zap.Logger 的 Sync 方法，将缓存日志刷新到磁盘文件中，需要再主程序退出前调用
 func Sync() {
 	std.Sync()
 }
@@ -139,6 +147,7 @@ func (l *zapLogger) Sync() {
 	_ = l.z.Sync()
 }
 
+// C 解析传入的 context，并尝试提取关注的键值，添加到日志中
 func C(ctx context.Context) *zapLogger {
 	return std.C(ctx)
 }
@@ -146,12 +155,14 @@ func C(ctx context.Context) *zapLogger {
 func (l *zapLogger) C(ctx context.Context) *zapLogger {
 	lc := l.clone()
 
-	if requestID := ctx.Value(known.RequestUUID); requestID != nil {
-		lc.z = lc.z.With(zap.Any(known.RequestUUID, requestID))
+	// 定义一个映射，关联 context 提取函数和日志字段名
+
+	if requestID := ctx.Value(known.XRequestID); requestID != nil {
+		lc.z = lc.z.With(zap.Any(known.XRequestID, requestID))
 	}
 
-	if userID := ctx.Value(known.Usernamekey); userID != nil {
-		lc.z = lc.z.With(zap.Any(known.Usernamekey, userID))
+	if userID := ctx.Value(known.XUserName); userID != nil {
+		lc.z = lc.z.With(zap.Any(known.XUserName, userID))
 	}
 
 	return lc

@@ -61,3 +61,13 @@ tidy:
 format: tools.verify.protolint
 	@$(MAKE) go.format
 	@protolint -fix -config_path ${PROJ_ROOT_DIR}/.protolint.yaml $(shell find $(APIROOT) -name *.proto)
+
+# ==============================================================================
+# Lint / verification
+# ==============================================================================
+
+ca:
+	@$(MAKE) gen.ca
+
+protoc:
+	@$(MAKE) gen.protoc
