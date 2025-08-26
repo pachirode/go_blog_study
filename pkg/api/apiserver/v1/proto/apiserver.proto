@@ -1,0 +1,243 @@
+// MiniBlog API 定义
+syntax = "proto3";
+
+package v1;
+
+// 用于提供 HTTP 映射功能，通过 option （google.api.http） 实现 gRPC 到 HTTP
+import "google/api/annotations.proto";
+// 提供一个标准的空类型，适用于不需要输入消息或者输出消息的场景
+import "google/protobuf/empty.proto";
+import "apiserver/v1/proto/healthz.proto";
+import "apiserver/v1/proto/post.proto";
+import "apiserver/v1/proto/user.proto";
+// 为 OpenAPI 生成文档提供相关注释
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// 生成 Go 代码包，别名 v1
+option go_package = "github.com/pachirode/go_blog_study/pkg/api/apiserver/v1;v1";
+
+// OpenAPI 全局配置，提供信息用于生成 OpenAPI 文档
+option(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "MiniBlog API";
+    version: "1.0";
+    description: "MiniBlog API 文档";
+    contact: {
+      name: "pachirode";
+      url: "https://github.com/pachirode";
+      email: "pachirode@gmail.com";
+    };
+    license: {
+      name: "MIT";
+    };
+  };
+  schemes: HTTPS;
+  // 服务的请求和响应数据格式
+  consumes: "application/json";
+  produces: "application/json";
+};
+
+// MiniBlog 服务是一个 PRC 服务
+service MiniBlog {
+  // Healthz 健康检查
+  rpc Healthz(google.protobuf.Empty) returns (HealthzResponse) {
+    // 通过 google.api.http 注解映射 HTTP 请求
+    option(google.api.http) = {
+      get: "/healthz"
+    };
+
+    option(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "健康检查";
+      operation_id: "Healthz";
+      tags: "服务器治理";
+    };
+  }
+
+  // Login 用户登录
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/login",
+      body: "*",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "用户登录";
+      operation_id: "Login";
+      description: "";
+      tags: "用户管理";
+    };
+  }
+
+  // RefreshToken 刷新令牌
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
+    option (google.api.http) = {
+      put: "/refresh-token",
+      body: "*",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "刷新令牌";
+      operation_id: "RefreshToken";
+      description: "";
+      tags: "用户管理";
+    };
+  }
+
+
+  // ChangePassword 修改密码
+  rpc ChangePassword(ChangePasswordRequest) returns (ChangePasswordResponse) {
+    option (google.api.http) = {
+      put: "/v1/users/{userID}/change-password",
+      body: "*",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "修改密码";
+      operation_id: "ChangePassword";
+      tags: "用户管理";
+    };
+  }
+
+  // CreateUser 创建用户
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+    option (google.api.http) = {
+      post: "/v1/users",
+      body: "*",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "创建用户";
+      operation_id: "CreateUser";
+      tags: "用户管理";
+    };
+  }
+
+  // UpdateUser 更新用户信息
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
+    option (google.api.http) = {
+      put: "/v1/users/{userID}",
+      body: "*",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "更新用户信息";
+      operation_id: "UpdateUser";
+      tags: "用户管理";
+    };
+  }
+
+  // DeleteUser 删除用户
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {
+      delete: "/v1/users/{userID}",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "删除用户";
+      operation_id: "DeleteUser";
+      tags: "用户管理";
+    };
+  }
+
+  // GetUser 获取用户信息
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      get: "/v1/users/{userID}",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "获取用户信息";
+      operation_id: "GetUser";
+      tags: "用户管理";
+    };
+  }
+
+  // ListUser 列出所有用户
+  rpc ListUser(ListUserRequest) returns (ListUserResponse) {
+    option (google.api.http) = {
+      get: "/v1/users",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "列出所有用户";
+      operation_id: "ListUser";
+      tags: "用户管理";
+    };
+  }
+
+  // CreatePost 创建文章
+  rpc CreatePost(CreatePostRequest) returns (CreatePostResponse) {
+    option (google.api.http) = {
+      post: "/v1/posts",
+      body: "*",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "创建文章";
+      operation_id: "CreatePost";
+      tags: "博客管理";
+    };
+  }
+
+  // UpdatePost 更新文章
+  rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse) {
+    // 将 UpdatePost 映射为 HTTP PUT 请求，并通过 URL /v1/posts/{postID} 访问
+    // {postID} 是一个路径参数，grpc-gateway 会根据 postID 名称，将其解析并映射到
+    // UpdatePostRequest 类型中相应的字段.
+    // body: "*" 表示请求体中的所有字段都会映射到 UpdatePostRequest 类型。
+    option (google.api.http) = {
+      put: "/v1/posts/{postID}",
+      body: "*",
+    };
+
+    // 提供用于生成 OpenAPI 文档的注解
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      // 在文档中简要描述此操作的功能：更新文章。
+      summary: "更新文章";
+      // 为此操作指定唯一标识符（UpdatePost），便于跟踪
+      operation_id: "UpdatePost";
+      // 将此操作归类到 "博客管理" 标签组，方便在 OpenAPI 文档中组织接口分组
+      tags: "博客管理";
+    };
+  }
+
+  // DeletePost 删除文章
+  rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {
+    option (google.api.http) = {
+      delete: "/v1/posts",
+      body: "*",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "删除文章";
+      operation_id: "DeletePost";
+      tags: "博客管理";
+    };
+  }
+
+  // GetPost 获取文章信息
+  rpc GetPost(GetPostRequest) returns (GetPostResponse) {
+    option (google.api.http) = {
+      get: "/v1/posts/{postID}",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "获取文章信息";
+      operation_id: "GetPost";
+      tags: "博客管理";
+    };
+  }
+
+  // ListPost 列出所有文章
+  rpc ListPost(ListPostRequest) returns (ListPostResponse) {
+    option (google.api.http) = {
+      get: "/v1/posts",
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "列出所有文章";
+      operation_id: "ListPost";
+      tags: "博客管理";
+    };
+  }
+};
