@@ -45,3 +45,35 @@ license -n 'pachirode' -o 'LICENSE' mit
 - `gRPC` 实现 `RPC` 服务
 - `grpc-gateway` 实现 `HTTP` 反向代理，将 `HTTP` 转换为 `gRPC`
 - 支持开启 `TLS` 认证
+
+##### `gRPC`
+
+使用 `reflection.Register()` 注册反射服务，从而使得服务支持反射功能。反射功能允许客户端动态查询 `gRPC`
+服务器上的服务信息且无需拥有 `Protobuf` 文件
+
+```bash
+go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+grpcurl -plaintext localhost:6666 list # 需要先启动 miniblog gRPC服务，可以稍后测试
+grpc.reflection.v1.ServerReflection
+grpc.reflection.v1alpha.ServerReflection
+v1.MiniBlog
+```
+
+##### `grpc-gateway`
+
+传统 `gRPC` 应用中，通常会创建一个 `gRPC` 客户端和 `gRPC` 服务器进行交互；`RESTful`
+服务，为每一个远程方法暴露 `RESTful API`，接收到请求之后将其转换为 `gRPC` 请求，并调用 `gRPC` 服务
+
+`protoc` 的一个插件，读取 `gRPC` 服务定义，并生成反向代理服务器
+反向代理服务器根据服务定义中的 `google.api.http` 注释生成，能给将 `RESTful` 请求映射为 `gRPC`
+
+插件
+
+- `protoc-gen-grpc-gateway`
+    - 生成 `HTTP/REST API` 反向代理代码
+- `protoc-gen-openapiv2`
+    - 生成 `OpenAPI v2(Swagger)` 定义文件
+
+```bash
+ --grpc-gateway_out=allow_delete_body=true # 允许删除请求体
+```

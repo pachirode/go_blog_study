@@ -1,5 +1,25 @@
-db:
-  host: 127.0.0.1
+server-mode: gin
+# JWT 签发密钥
+jwt-key: ed94598741cdda4b9bd378c13a58fd31
+# JWT Token 过期时间
+jwt-expire: 12h
+# 是否启用内存数据库
+enable-memory-db: true
+
+# 服务器安全相关
+tls:
+  use-tls: false
+  cert: ./_output/cert/server.crt
+  key: ./_output/cert/server.key
+
+http:
+  addr: :5555
+
+grpc:
+  addr: :6666
+
+mysql:
+  addr: 127.0.0.1
   username: miniblog
   password: miniblog1234
   database: miniblog
@@ -7,19 +27,10 @@ db:
   max-open-connections: 100
   max-connection-life-time: 100
   log-level: 4
+
 log:
   disable-caller: false
   disable-stacktrace: false
   level: debug
   format: console
-  output-paths: [/tmp/miniblog.log, stdout]
-web:
-  runmode: debug
-  addr: 0.0.0.0:8080
-  jwt-secret: 208d42834313bd7494f43ec3033244c3
-tls:
-  addr: 0.0.0.0:8843
-  cert: ./_output/cert/server.crt
-  key: ./_output/cert/server.key
-grpc:
-  addr: 0.0.0.0:8089
+  output-paths: [ ./miniblog.log, stdout ]

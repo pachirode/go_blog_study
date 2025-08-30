@@ -1,9 +1,13 @@
 package apiserver
 
 import (
-	"github.com/pachirode/go_blog_study/internal/pkg/server"
 	"time"
 
+	"github.com/pachirode/go_blog_study/internal/apiserver/biz"
+	"github.com/pachirode/go_blog_study/internal/apiserver/pkg/validation"
+	mw "github.com/pachirode/go_blog_study/internal/pkg/middleware/gin"
+	"github.com/pachirode/go_blog_study/internal/pkg/server"
+	"github.com/pachirode/pkg/authz"
 	genericOptions "github.com/pachirode/pkg/options"
 )
 
@@ -29,7 +33,22 @@ type Config struct {
 	MySQLOptions      *genericOptions.MySQLOptions
 }
 
-// UnionServer type UnionServer struct {
+// UnionServer 联合服务器，根据 ServerMode 决定要启动的服务器类型
+// 可选服务器类型
+//   - GRPC
+//   - HTTP 反向代理
+//   - grpc-gateway 反向代理，根据 TLS 决定启动 HTTP 还是 HTTPS
+//   - Gin
+//   - 根据是否启动 TLS 来判断启动 HTTP 还是 HTTPS
 type UnionServer struct {
 	srv server.Server
+}
+
+// ServerConfig 服务器依赖和配置项目
+type ServerConfig struct {
+	cfg       *Config
+	biz       biz.IBiz
+	val       *validation.Validator
+	retriever mw.UserRetriever
+	authz     *authz.Authz
 }
