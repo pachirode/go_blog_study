@@ -4,6 +4,7 @@ syntax = "proto3";
 package v1;
 
 import "google/protobuf/timestamp.proto";
+import "github.com/onexstack/defaults/defaults.proto";
 
 option go_package = "github.com/pachirode/go_blog_study/pkg/api/apiserver/v1;v1";
 
@@ -14,7 +15,7 @@ message User {
     // username 表示用户名称
     string username = 2;
     // nickname 表示用户昵称
-    string nickname = 3;
+    optional string nickname = 3 [(defaults.value).string = "username"];
     // email 表示用户电子邮箱
     string email = 4;
     // phone 表示用户手机号
