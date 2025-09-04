@@ -2,11 +2,15 @@ package store
 
 import (
 	"context"
-	"gorm.io/gorm"
 	"sync"
+
+	"github.com/google/wire"
+	"gorm.io/gorm"
 
 	"github.com/pachirode/pkg/store/where"
 )
+
+var ProviderSet = wire.NewSet(NewStore, wire.Bind(new(IStore), new(*dataStore)))
 
 var (
 	once sync.Once

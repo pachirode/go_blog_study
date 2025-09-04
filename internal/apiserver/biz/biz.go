@@ -1,10 +1,13 @@
 package biz
 
 import (
+	"github.com/google/wire"
 	userv1 "github.com/pachirode/go_blog_study/internal/apiserver/biz/v1/user"
 	"github.com/pachirode/go_blog_study/internal/apiserver/store"
 	"github.com/pachirode/pkg/authz"
 )
+
+var ProviderSet = wire.NewSet(NewBiz, wire.Bind(new(IBiz), new(*biz)))
 
 // IBiz 定义了业务层需要实现的方法.
 type IBiz interface {
