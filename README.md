@@ -289,6 +289,34 @@ go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@v2.24.
 - 身份认证
     - 支持单向认证和双向认证，单向认证用于服务端真实性，双向认证服务端和客户端都需要
 
+### 单元测试
+
+- `testing` 标准库
+    - 单元测试
+    - 性能测试
+    - 模糊测试
+- 测试率覆盖率
+    - `go test -coverprofile=cover.out`
+    - `go tool cover -func=cover.out`
+
+### 性能分析
+
+数据采集
+
+- `Benchmark`
+    - 最简单直接的性能数据采集方式，通常用于采集单个函数性能数据
+- `runtime/pprof`
+    - 应用程序执行一段时间后即结束的场景
+- `net/http/pprof`
+    - 程序持续运行的场景
+- 日志采集
+- `metrics`
+    - 代码中记录性能数据，并将其上报到监控平台或保存到本地文件中查看
+
+### 静态代码检查
+
+### 依赖注入
+
 # 约定的命名方式
 
 - `XXXOr`

@@ -15,6 +15,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.0
 	github.com/jinzhu/copier v0.4.0
 	github.com/pachirode/pkg v0.0.3
+	github.com/prometheus/common v0.60.0
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.7
 	github.com/spf13/viper v1.20.1
@@ -26,6 +27,7 @@ require (
 	google.golang.org/grpc v1.75.0
 	google.golang.org/protobuf v1.36.8
 	gorm.io/driver/mysql v1.6.0
+	gorm.io/driver/sqlite v1.4.3
 	gorm.io/gen v0.3.27
 	gorm.io/gorm v1.30.1
 	k8s.io/apimachinery v0.32.1
@@ -84,6 +86,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
+	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 	github.com/microsoft/go-mssqldb v1.6.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
@@ -95,7 +98,6 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.20.5 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
-	github.com/prometheus/common v0.60.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/redis/go-redis/extra/rediscensus/v9 v9.7.0 // indirect
 	github.com/redis/go-redis/extra/rediscmd/v9 v9.7.0 // indirect
@@ -104,6 +106,7 @@ require (
 	github.com/rivo/uniseg v0.4.2 // indirect
 	github.com/sagikazarmark/locafero v0.7.0 // indirect
 	github.com/segmentio/kafka-go v0.4.47 // indirect
+	github.com/sony/sonyflake v1.2.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.12.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
